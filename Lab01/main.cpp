@@ -5,12 +5,15 @@
 #include <ctime>
 #include <climits>
 #include <cmath>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 const int MAXNUM = 100; // INT_MAX;
 const int TAM = 1000;
 string NUMFILE = "in.txt";
+string TIMEFILE = "times.txt";
 
 /*************************
  *  AUXILIARY FUNCTIONS
@@ -43,6 +46,18 @@ void generadorNumRandom(int tamanio)
         // Guardar los números en el archivo
         numbersFile << num << "\n";
     }
+    numbersFile.close();
+}
+
+// Guardar los tiempos de ejecución 
+void timesFile(string name, microseconds duration)
+{
+    // Crear archivo
+    ofstream outfile;
+    outfile.open(TIMEFILE, ios::app);
+    int _duration = duration.count();
+    outfile << name << ", " <<_duration << "\n";
+    outfile.close();
 }
 
 // Implementacion de los siguientes algoritmos:
@@ -274,7 +289,7 @@ int partition(int array[], int start, int end)
     }
  
     // swap `pIndex` with pivot
-    swap (array[pIndex], array[end]);
+    swap (&array[pIndex], &array[end]);
  
     // return `pIndex` (index of the pivot element)
     return pIndex;
@@ -366,11 +381,31 @@ int main()
     // mergeSort(A, TAM);
 
     // 7. Quick sort
-    quickSort(A, TAM);
+    //quickSort(A, TAM);
 
     // Print sorted array
     printArray(A, TAM);
-
     cout << endl;
+
+    // Time Execution
+    auto start = high_resolution_clock::now();
+ 
+    // Call the function, here sort()
+    quickSort(A, TAM);
+     
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+ 
+    timesFile("Quick" , duration);
+
+     start = high_resolution_clock::now();
+ 
+    // Call the function, here sort()
+    mergeSort(A, TAM);
+     
+     stop = high_resolution_clock::now();
+     duration = duration_cast<microseconds>(stop - start);
+ 
+    timesFile("Merge" , duration);
     return 0;
 }
