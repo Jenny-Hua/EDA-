@@ -42,8 +42,6 @@ void generadorNumRandom(int tamanio)
     for (int i = 0; i < tamanio; i++)
     {
         num = 1 + rand() % (MAXNUM);
-        // cout << num<< " ";
-        // Guardar los números en el archivo
         numbersFile << num << "\n";
     }
     numbersFile.close();
@@ -122,7 +120,6 @@ void heapify(int array[], int n, int i)
     }
 }
 
-// main function to do heap sort
 void heapSort(int array[], int n)
 {
     // Build max heap
@@ -295,7 +292,6 @@ int partition(int array[], int start, int end)
     return pIndex;
 }
  
-// Iterative Quicksort routine
 void quickSort(int array[], int n)
 {
     // create a stack of `std::pairs` for storing subarray start and end index
@@ -362,50 +358,62 @@ int main()
     }
 
     // Switch between sort Algorithms:
-    // 1. Bubble sort
-    // bubbleSort(A, TAM);
-
-    // 2. Heap sort
-    // heapSort(A, TAM);
-
-    // 3. Insertion sort
-    // insertionSort(A, TAM);
-
-    // 4. Selection sort
-    // selectionSort(A, TAM);
-
-    // 5. Shell sort
-    // shellSort(A,TAM);
-
-    // 6. Merge sort
-    // mergeSort(A, TAM);
-
-    // 7. Quick sort
-    //quickSort(A, TAM);
+    auto start = high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
+    microseconds duration;
+    int caso = 3;
+    switch(caso ) {
+        case 1:
+            start = high_resolution_clock::now();
+            bubbleSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            //duration = duration_cast<microseconds>(stop - start);
+            timesFile("Bubble", duration_cast<microseconds>(stop - start));
+            break;
+        case 2:
+            start = high_resolution_clock::now();
+            heapSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Heap", duration_cast<microseconds>(stop - start));
+            break;
+        case 3:
+            start = high_resolution_clock::now();
+            insertionSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Insertion", duration_cast<microseconds>(stop - start));
+            break;
+        case 4:
+            start = high_resolution_clock::now();
+            selectionSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Selection", duration_cast<microseconds>(stop - start));
+            break;
+        case 5:
+            start = high_resolution_clock::now();
+            shellSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Shell", duration_cast<microseconds>(stop - start));
+            break;
+        case 6:
+            start = high_resolution_clock::now();
+            mergeSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Merge", duration_cast<microseconds>(stop - start));
+            break;
+        case 7:
+            start = high_resolution_clock::now();
+            quickSort(A, TAM);    
+            stop = high_resolution_clock::now();
+            timesFile("Quick", duration_cast<microseconds>(stop - start));
+            break;
+        // default:
+            
+    }
 
     // Print sorted array
-    printArray(A, TAM);
-    cout << endl;
-
-    // Time Execution
-    auto start = high_resolution_clock::now();
+    //printArray(A, TAM);
+    
  
-    // Call the function, here sort()
-    quickSort(A, TAM);
-     
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
- 
-    timesFile("Quick" , duration);
-
-     start = high_resolution_clock::now();
- 
-    // Call the function, here sort()
-    mergeSort(A, TAM);
-     
-     stop = high_resolution_clock::now();
-     duration = duration_cast<microseconds>(stop - start);
- 
-    timesFile("Merge" , duration);
+    cout <<"\n";
     return 0;
 }
