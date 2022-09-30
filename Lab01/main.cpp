@@ -1,25 +1,25 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stack>
 #include <ctime>
 #include <climits>
 #include <cmath>
 
 using namespace std;
 
-
-
 const int MAXNUM = 100; // INT_MAX;
-const int TAM = 1000010;
+const int TAM = 1000;
 string NUMFILE = "in.txt";
 
 /*************************
  *  AUXILIARY FUNCTIONS
  *************************/
-void swap(int *a, int *b) {
-  int temp = *a;
-  *a = *b;
-  *b = temp;
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 void printArray(int A[], int n)
@@ -43,9 +43,7 @@ void generadorNumRandom(int tamanio)
         // Guardar los números en el archivo
         numbersFile << num << "\n";
     }
-} 
-
-
+}
 
 // Implementacion de los siguientes algoritmos:
 //   1. Bubble sort
@@ -125,164 +123,200 @@ void heapSort(int array[], int n)
         heapify(array, i, 0);
     }
 }
+
 /*************************
  * 3. Insertion sort
  *************************/
-void insertionSort(int array[], int n) {
-  for (int step = 1; step < n; step++) {
-    int key = array[step];
-    int j = step - 1;
+void insertionSort(int array[], int n)
+{
+    for (int step = 1; step < n; step++)
+    {
+        int key = array[step];
+        int j = step - 1;
 
-    while (key < array[j] && j >= 0) {
-      array[j + 1] = array[j];
-      --j;
+        while (key < array[j] && j >= 0)
+        {
+            array[j + 1] = array[j];
+            --j;
+        }
+        array[j + 1] = key;
     }
-    array[j + 1] = key;
-  }
 }
 
 /*************************
  *   4. Selection sort
  *************************/
-void selectionSort(int array[], int n) {
-  for (int step = 0; step < n - 1; step++) {
-    int min_idx = step;
-    for (int i = step + 1; i < n; i++) {
+void selectionSort(int array[], int n)
+{
+    for (int step = 0; step < n - 1; step++)
+    {
+        int min_idx = step;
+        for (int i = step + 1; i < n; i++)
+        {
 
-      // To sort in descending order, change > to < in this line.
-      // Select the minimum element in each loop.
-      if (array[i] < array[min_idx])
-        min_idx = i;
+            // To sort in descending order, change > to < in this line.
+            // Select the minimum element in each loop.
+            if (array[i] < array[min_idx])
+                min_idx = i;
+        }
+
+        // put min at the correct position
+        swap(&array[min_idx], &array[step]);
     }
-
-    // put min at the correct position
-    swap(&array[min_idx], &array[step]);
-  }
 }
 
 /*************************
  *   5. Shell sort
  *************************/
-void shellSort(int array[], int n) {
-  // Rearrange elements at each n/2, n/4, n/8, ... intervals
-  for (int interval = n / 2; interval > 0; interval /= 2) {
-    for (int i = interval; i < n; i += 1) {
-      int temp = array[i];
-      int j;
-      for (j = i; j >= interval && array[j - interval] > temp; j -= interval) {
-        array[j] = array[j - interval];
-      }
-      array[j] = temp;
+void shellSort(int array[], int n)
+{
+    // Rearrange elements at each n/2, n/4, n/8, ... intervals
+    for (int interval = n / 2; interval > 0; interval /= 2)
+    {
+        for (int i = interval; i < n; i += 1)
+        {
+            int temp = array[i];
+            int j;
+            for (j = i; j >= interval && array[j - interval] > temp; j -= interval)
+            {
+                array[j] = array[j - interval];
+            }
+            array[j] = temp;
+        }
     }
-  }
 }
 
 /*************************
  *   6. Merge sort
  *************************/
-void merge(int A[], int p, int q, int r)
+void merge(int Arr[], int l, int m, int r)
 {
-    // nro de elementos en cada submatriz
-    int n1 = q - p + 1; // + 1 para contener el elemento medio
-    int n2 = r - q;
 
-    // Crear las submatrices L[] y R[] con un espacio extra c/una
-    int L[n1 + 1];
-    int R[n2 + 1];
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int L[n1], R[n2];
 
-    // Llenado de submatriz L con la mitad izquierda de A[] incluyendo el medio
-    for (int i = 0; i < n1; i++)
-    {
-        L[i] = A[p + i]; // L[0..n1-1] = A[p..n1-1]
-    }
-    // Llenado de submatriz R con la mitad derecha de A[],
-    //  comenzando por el siguiente elemento despúes del medio (+1)
-    for (int j = 0; j < n2; j++)
-    {
-        R[j] = A[q + j + 1]; // R[0..n2-1] = A[n2+1..r]
-    }
+    for (i = 0; i < n1; i++)
+        L[i] = Arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = Arr[m + 1 + j];
+    i = 0, j = 0, k = l;
 
-    // Llenando el último elemento de c/submatriz con un inf (numero max grande)
-    L[n1] = INT_MAX;
-    R[n2] = INT_MAX;
-
-    int i = 0;
-    int j = 0;
-    for (int k = p; k <= r; k++)
+    while (i < n1 && j < n2)
     {
         if (L[i] <= R[j])
         {
-            A[k] = L[i];
-            i = i + 1;
+            Arr[k] = L[i];
+            i++;
         }
         else
         {
-            A[k] = R[j];
-            j = j + 1;
+            Arr[k] = R[j];
+            j++;
         }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        Arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        Arr[k] = R[j];
+        j++;
+        k++;
     }
 }
 
-void mergeSort(int A[], int p, int r)
+void mergeSort(int Arr[], int N)
 {
-    if (p < r)
+
+    for (int sub_size = 1; sub_size < N; sub_size *= 2)
     {
-        int q = floor((p + r) / 2);
-        mergeSort(A, p, q);
-        mergeSort(A, q + 1, r);
-        merge(A, p, q, r);
+        for (int L = 0; L < N; L += (2 * sub_size))
+        {
+            int Mid = min(L + sub_size - 1, N - 1);
+            int R = min(L + 2 * sub_size - 1, N - 1);
+            // function to merge  two sub-arrays of
+            // size sub_size starting from L and Mid
+            merge(Arr, L, Mid, R);
+        }
     }
 }
 
 /*************************
  *   7. Quick sort
  *************************/
-// function to rearrange array (find the partition point)
-int partition(int array[], int low, int high) {
-    
-  // select the rightmost element as pivot
-  int pivot = array[high];
-  
-  // pointer for greater element
-  int i = (low - 1);
-
-  // traverse each element of the array
-  // compare them with the pivot
-  for (int j = low; j < high; j++) {
-    if (array[j] <= pivot) {
-        
-      // if element smaller than pivot is found
-      // swap it with the greater element pointed by i
-      i++;
-      
-      // swap element at i with element at j
-      swap(&array[i], &array[j]);
+int partition(int array[], int start, int end)
+{
+    // Pick the rightmost element as a pivot from the array
+    int pivot = array[end];
+ 
+    // elements less than the pivot goes to the left of `pIndex`
+    // elements more than the pivot goes to the right of `pIndex`
+    // equal elements can go either way
+    int pIndex = start;
+ 
+    // each time we find an element less than or equal to the pivot, `pIndex`
+    // is incremented, and that element would be placed before the pivot.
+    for (int i = start; i < end; i++)
+    {
+        if (array[i] <= pivot)
+        {
+            swap(array[i], array[pIndex]);
+            pIndex++;
+        }
     }
-  }
-  
-  // swap pivot with the greater element at i
-  swap(&array[i + 1], &array[high]);
-  
-  // return the partition point
-  return (i + 1);
+ 
+    // swap `pIndex` with pivot
+    swap (array[pIndex], array[end]);
+ 
+    // return `pIndex` (index of the pivot element)
+    return pIndex;
 }
-
-void quickSort(int array[], int low, int high) {
-  if (low < high) {
-      
-    // find the pivot element such that
-    // elements smaller than pivot are on left of pivot
-    // elements greater than pivot are on righ of pivot
-    int pi = partition(array, low, high);
-
-    // recursive call on the left of pivot
-    quickSort(array, low, pi - 1);
-
-    // recursive call on the right of pivot
-    quickSort(array, pi + 1, high);
-  }
+ 
+// Iterative Quicksort routine
+void quickSort(int array[], int n)
+{
+    // create a stack of `std::pairs` for storing subarray start and end index
+    stack<pair<int, int>> s;
+ 
+    // get the starting and ending index of the given array
+    int start = 0;
+    int end = n - 1;
+ 
+    // push the start and end index of the array into the stack
+    s.push(make_pair(start, end));
+ 
+    // loop till stack is empty
+    while (!s.empty())
+    {
+        // remove top pair from the list and get subarray starting
+        // and ending indices
+        start = s.top().first, end = s.top().second;
+        s.pop();
+ 
+        // rearrange elements across pivot
+        int pivot = partition(array, start, end);
+ 
+        // push subarray indices containing elements that are
+        // less than the current pivot to stack
+        if (pivot - 1 > start) {
+            s.push(make_pair(start, pivot - 1));
+        }
+ 
+        // push subarray indices containing elements that are
+        // more than the current pivot to stack
+        if (pivot + 1 < end) {
+            s.push(make_pair(pivot + 1, end));
+        }
+    }
 }
-
 
 /*************************
  *        MAIN
@@ -312,7 +346,6 @@ int main()
         A[i] = num;
     }
 
-
     // Switch between sort Algorithms:
     // 1. Bubble sort
     // bubbleSort(A, TAM);
@@ -321,23 +354,22 @@ int main()
     // heapSort(A, TAM);
 
     // 3. Insertion sort
-    //insertionSort(A, TAM);
+    // insertionSort(A, TAM);
 
     // 4. Selection sort
     // selectionSort(A, TAM);
 
     // 5. Shell sort
     // shellSort(A,TAM);
-    
+
     // 6. Merge sort
-    // mergeSort(A, 0, TAM-1);
-    
+    // mergeSort(A, TAM);
+
     // 7. Quick sort
-    quickSort(A, 0, TAM-1);
+    quickSort(A, TAM);
 
     // Print sorted array
     printArray(A, TAM);
-
 
     cout << endl;
     return 0;

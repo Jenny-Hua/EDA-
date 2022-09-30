@@ -7,7 +7,7 @@
     * Insertion sort
     * Selection sort - https://www.programiz.com/dsa/selection-sort
     * Shell sort - https://www.programiz.com/dsa/shell-sort
-    * Merge sort
+    * Merge sort - https://www.interviewkickstart.com/learn/iterative-merge-sort
     * Quick sort - https://www.programiz.com/dsa/quick-sort
 3. Analizar la complejidad computacional de cada uno.
 4. Evaluar y comparar sus algoritmos usando el archivo generado (variando el tama ̃no del vector) y construir una(s) grafica(s) comparativa(s).s
