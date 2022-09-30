@@ -1,0 +1,36 @@
+\\\\100000\\\
+Bubble, 140447020
+Heap, 124913
+Insertion, 43337580
+Selection, 4828
+Shell, 143472
+Merge, 103449
+Quick, 143084
+
+\\\\500000\\\
+
+Bubble, INF
+Heap, 222070
+Insertion, INF
+Selection, 25153
+Shell, 272371
+Merge, 375560
+Quick, INF
+
+\\\\1000000\\\
+Bubble, INF
+Heap, 1385109
+Insertion, INF
+Selection, 38630
+Shell, 1500713
+Merge, 856104
+Quick, INF
+
+\\\\1500000\\\
+Bubble, INF
+Heap, 1835999
+Insertion, INF
+Selection, 57959
+Shell, 1704823
+Merge, INF
+Quick, INF
