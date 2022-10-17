@@ -1,4 +1,5 @@
 // Red Black Tree MODIFICATED implementation in C++
+// FROM Algorithm Tutor
 
 #ifndef RBTREE_H
 #define RBTREE_H
@@ -12,7 +13,7 @@ using namespace std;
 // Nodo del árbol
 struct Node
 {
-    int data;     
+    int data;     // holds the key
     Node *parent; // puntero al padre
     Node *left;   // puntero al hijo izquierdo
     Node *right;  // puntero al hijo derecho
@@ -27,8 +28,49 @@ class RBTree
 private:
     NodePtr root;
     NodePtr TNULL;
-    
-    NodePtr searchHelper(NodePtr node, int key)
+
+    // inicializa los nodos con valores apropiados 
+    // todos los punteros se configuran para apuntar al puntero nulo
+    void initializeNULLNode(NodePtr node, NodePtr parent)
+    {
+        node->data = 0;
+        node->parent = parent;
+        node->left = nullptr;
+        node->right = nullptr;
+        node->color = 0;
+    }
+
+    void preOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
+        {
+            cout << node->data << " ";
+            preOrderHelper(node->left);
+            preOrderHelper(node->right);
+        }
+    }
+
+    void inOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
+        {
+            inOrderHelper(node->left);
+            cout << node->data << " ";
+            inOrderHelper(node->right);
+        }
+    }
+
+    void postOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
+        {
+            postOrderHelper(node->left);
+            postOrderHelper(node->right);
+            cout << node->data << " ";
+        }
+    }
+
+    NodePtr searchTreeHelper(NodePtr node, int key)
     {
         if (node == TNULL || key == node->data)
         {
@@ -37,9 +79,9 @@ private:
 
         if (key < node->data)
         {
-            return searchHelper(node->left, key);
+            return searchTreeHelper(node->left, key);
         }
-        return searchHelper(node->right, key);
+        return searchTreeHelper(node->right, key);
     }
 
     // fix the rb tree modified by the delete operation
@@ -308,17 +350,38 @@ public:
         TNULL->color = 0;
         TNULL->left = nullptr;
         TNULL->right = nullptr;
-        TNULL->parent = nullptr;
         root = TNULL;
+    }
+
+    // Pre-Order traversal
+    // Node->Left Subtree->Right Subtree
+    void preorder()
+    {
+        preOrderHelper(this->root);
+    }
+
+    // In-Order traversal
+    // Left Subtree -> Node -> Right Subtree
+    void inorder()
+    {
+        inOrderHelper(this->root);
+    }
+
+    // Post-Order traversal
+    // Left Subtree -> Right Subtree -> Node
+    void postorder()
+    {
+        postOrderHelper(this->root);
     }
 
     // Buscar el subárbol para la key k
     // y retornar el nodo correspondiente
-    NodePtr search(int k)
+    NodePtr searchTree(int k)
     {
-        return searchHelper(this->root, k);
+        return searchTreeHelper(this->root, k);
     }
 
+    // find the node with the minimum key
     NodePtr minimum(NodePtr node)
     {
         while (node->left != TNULL)
@@ -328,6 +391,7 @@ public:
         return node;
     }
 
+    // find the node with the maximum key
     NodePtr maximum(NodePtr node)
     {
         while (node->right != TNULL)
@@ -337,19 +401,19 @@ public:
         return node;
     }
 
-    // Encuentra el sucesor de un nodo dado
+    // find the successor of a given node
     NodePtr successor(NodePtr x)
     {
-        // si el subárbol derecho no es nulo,
-        // el sucesor es el nodo más a la izquierda en el
-        // subárbol derecho
+        // if the right subtree is not null,
+        // the successor is the leftmost node in the
+        // right subtree
         if (x->right != TNULL)
         {
             return minimum(x->right);
         }
 
-        // de lo contrario, es el ancestro más bajo de x cuyo
-        // el hijo izquierdo también es un ancestro de x.
+        // else it is the lowest ancestor of x whose
+        // left child is also an ancestor of x.
         NodePtr y = x->parent;
         while (y != TNULL && x == y->right)
         {
@@ -362,9 +426,9 @@ public:
     // find the predecessor of a given node
     NodePtr predecessor(NodePtr x)
     {
-        // si el subárbol izquierdo no es nulo,
-        // el predecesor es el nodo más a la derecha en el
-        // subárbol izquierdo
+        // if the left subtree is not null,
+        // the predecessor is the rightmost node in the
+        // left subtree
         if (x->left != TNULL)
         {
             return maximum(x->left);
@@ -380,7 +444,7 @@ public:
         return y;
     }
 
-    // gira a la izquierda en el nodo x
+    // rotate left at node x
     void leftRotate(NodePtr x)
     {
         NodePtr y = x->right;
@@ -406,7 +470,7 @@ public:
         x->parent = y;
     }
 
-    // gira a la derecha en el nodo x
+    // rotate right at node x
     void rightRotate(NodePtr x)
     {
         NodePtr y = x->left;
@@ -432,8 +496,8 @@ public:
         x->parent = y;
     }
 
-    // inserta la clave del árbol en su posición apropiada
-    // y arregla el árbol
+    // insert the key to the tree in its appropriate position
+    // and fix the tree
     void insert(int key)
     {
         // Ordinary Binary Search Insertion
@@ -497,13 +561,13 @@ public:
         return this->root;
     }
 
-    // borra el nodo del árbol
+    // delete the node from the tree
     void deleteNode(int data)
     {
         deleteNodeHelper(this->root, data);
     }
 
-    // imprime la estructura de árbol en la pantalla
+    // print the tree structure on the screen
     void prettyPrint()
     {
         if (root)

@@ -14,15 +14,15 @@ void generadorNumRandom(std::string nameFile, int TAM, int MAXNUM)
     int num;
     for (int i = 0; i < TAM; i++)
     {
-        num = 1 + rand() % (MAXNUM);
-        numbersFile << num << "\n";
+        // num = 1 + rand() % (MAXNUM);
+        numbersFile << i+1 << "\n";
     }
     numbersFile.close();
 }
 
 
 // Guardar en archivo TIMEFILE la DURATION de ejecución en milisec de un INPUT (entrada)
-void timesFile(std::string TIMEFILE ,int input, std::chrono::milliseconds duration)
+void timesFile(std::string TIMEFILE ,int input, std::chrono::nanoseconds duration)
 {
     // Crear archivo
     std::ofstream outfile;
