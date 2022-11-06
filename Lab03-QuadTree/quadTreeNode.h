@@ -14,7 +14,7 @@ struct Point
 // Quad Limits in a Box
 struct Box
 {
-    int x, y, w, h;
+    float x, y, w, h;
     float left, right, top , bottom;
 
     void setLimits ();
@@ -33,10 +33,10 @@ void Box::setLimits ()
 bool Box::containsPoint(Point* p)
 {
     setLimits();
-    cout << "-- p.x = " << p->x << ", p.y = " << p->y << "\n";
+    /* cout << "-- p.x = " << p->x << ", p.y = " << p->y << "\n";
     cout << "-- L = " <<this->left << ", R = " <<this->right 
         << ", T = " <<this->top << ", B = " <<this->bottom << "\n";
-
+ */
 
     if (this->left <= p->x && p->x <= this->right
         && this->top <= p->y && p->y <= this->bottom)
@@ -122,6 +122,7 @@ class QuadTreeNode
         void subdivide();
         bool insert(Point* p);
         vector<Point*> queryRange(Box* range, vector<Point*> &pointsInRange);
+        // vector<int> queryRange(Box* range, vector<int> &pointsInRange);
 
         void childrenQuad();
 };
@@ -141,6 +142,7 @@ bool QuadTreeNode::isLeaf()
         return true;
     return false;
 }
+
 void QuadTreeNode::subdivide()
 {
     this->nw = new QuadTreeNode(this->boundary->subdivide(1), this->capacity, this->level + 1);
@@ -151,8 +153,8 @@ void QuadTreeNode::subdivide()
 
 bool QuadTreeNode::insert(Point* p)
 {
-    // Ignore objects that do not belong in this quad tree
     cout <<"\n";
+    // Ignore objects that do not belong in this quad tree
     if(!this->boundary->containsPoint(p))
     {
         cout <<"-- "<< p << " object cannot be added ";
@@ -180,9 +182,8 @@ bool QuadTreeNode::insert(Point* p)
         for (auto point : this->points)
         {
             insert(point);
+            point = nullptr;
         }
-        this->points.clear();
-        this->points.resize(this->capacity);
 
     }
     
@@ -213,7 +214,7 @@ bool QuadTreeNode::insert(Point* p)
     return false;
 }
 
-vector<Point*> QuadTreeNode::queryRange(Box* range, vector<Point*> &pointsInRange)
+/* vector<Point*> QuadTreeNode::queryRange(Box* range, vector<Point*> &pointsInRange)
 {   
     if(!(range->intersects(this->boundary)))
     {
@@ -243,7 +244,35 @@ vector<Point*> QuadTreeNode::queryRange(Box* range, vector<Point*> &pointsInRang
 
     }
     return pointsInRange;
-}
+} */
+
+vector<Point*> QuadTreeNode::queryRange(Box* range, vector<Point*> &pointsInRange)
+ {
+    if(!(range->intersects(this->boundary)))
+    {
+        return pointsInRange;
+    }
+
+    // If quad is divided
+    if (!(this->isLeaf()))
+    {
+        this->nw->queryRange(range, pointsInRange);
+        this->ne->queryRange(range, pointsInRange);
+        this->sw->queryRange(range, pointsInRange);
+        this->se->queryRange(range, pointsInRange);
+        return pointsInRange;
+    }
+
+    
+    for (auto p : this->points)
+    {
+        if(range->containsPoint(p))
+        {
+            pointsInRange.push_back(p);
+        }
+    }
+    return pointsInRange;
+ }
 
 void QuadTreeNode::childrenQuad ()
 {
